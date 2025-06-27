@@ -9,6 +9,8 @@ import com.Lino.eatEverything.models.FoodComponent;
 import com.Lino.eatEverything.utils.MessageUtils;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 
 import java.util.*;
 
@@ -82,7 +84,6 @@ public class EatEverythingCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            // Show current saturation
             FoodComponent food = plugin.getFoodManager().getFoodComponent(item);
             player.sendMessage(MessageUtils.colorize("&aCurrent saturation: &e" + food.getSaturation()));
         } else {
@@ -241,14 +242,14 @@ public class EatEverythingCommand implements CommandExecutor, TabCompleter {
         if (!food.getEffects().isEmpty()) {
             player.sendMessage(MessageUtils.colorize("&aEffects:"));
             food.getEffects().forEach(effect -> {
-                player.sendMessage(MessageUtils.colorize("  &7- &e" + effect.getType().getName() +
+                String effectName = effect.getType().getKey().getKey();
+                player.sendMessage(MessageUtils.colorize("  &7- &e" + effectName +
                         " &7(Level " + (effect.getAmplifier() + 1) + ", " +
                         (effect.getDuration() / 20) + "s, " +
                         (effect.getProbability() * 100) + "% chance)"));
             });
         }
 
-        // Create clickable give command
         TextComponent giveCommand = new TextComponent(MessageUtils.colorize("&a[Click to copy give command]"));
         giveCommand.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD,
                 plugin.getFoodManager().generateGiveCommand(item)));
@@ -294,7 +295,7 @@ public class EatEverythingCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            PotionEffectType effectType = PotionEffectType.getByName(args[2].toUpperCase());
+            PotionEffectType effectType = Registry.EFFECT.get(NamespacedKey.minecraft(args[2].toLowerCase()));
             if (effectType == null) {
                 player.sendMessage(MessageUtils.colorize("&cInvalid effect type!"));
                 return true;
@@ -460,9 +461,12 @@ public class EatEverythingCommand implements CommandExecutor, TabCompleter {
                     break;
             }
         } else if (args.length == 3 && args[0].equalsIgnoreCase("effect") && args[1].equalsIgnoreCase("add")) {
-            for (PotionEffectType type : PotionEffectType.values()) {
-                if (type != null && type.getName().toLowerCase().startsWith(args[2].toLowerCase())) {
-                    completions.add(type.getName());
+            for (PotionEffectType type : Registry.EFFECT) {
+                if (type != null) {
+                    String effectName = type.getKey().getKey();
+                    if (effectName.toLowerCase().startsWith(args[2].toLowerCase())) {
+                        completions.add(effectName);
+                    }
                 }
             }
         }

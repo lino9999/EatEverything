@@ -18,6 +18,8 @@ import com.Lino.eatEverything.EatEverything;
 import com.Lino.eatEverything.models.FoodComponent;
 import com.Lino.eatEverything.models.FoodEffect;
 import com.Lino.eatEverything.utils.MessageUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 
 import java.util.*;
 
@@ -34,12 +36,10 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // Only handle right-click actions
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
-        // Only handle main hand
         if (event.getHand() != EquipmentSlot.HAND) {
             return;
         }
@@ -47,45 +47,37 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        // Check if item is air
         if (item.getType().isAir()) {
             return;
         }
 
-        // Skip if item is already edible in vanilla
         if (item.getType().isEdible() && !hasCustomFoodData(item)) {
             return;
         }
 
-        // Get food component
         FoodComponent food = plugin.getFoodManager().getFoodComponent(item);
 
-        // Check if item has food data or default components
         if (!hasCustomFoodData(item) && !hasDefaultComponent(item.getType())) {
             return;
         }
 
-        // Check if player can eat
         if (!food.canAlwaysEat() && player.getFoodLevel() >= 20) {
             return;
         }
 
-        // Check cooldown
         UUID playerId = player.getUniqueId();
         if (food.getCooldown() > 0 && cooldowns.containsKey(playerId)) {
             long timeLeft = (cooldowns.get(playerId) + (food.getCooldown() * 1000)) - System.currentTimeMillis();
             if (timeLeft > 0) {
-                player.setCooldown(item.getType(), (int) (timeLeft / 50)); // Convert to ticks
+                player.setCooldown(item.getType(), (int) (timeLeft / 50));
                 return;
             }
         }
 
-        // Check if already eating
         if (eatingPlayers.containsKey(playerId)) {
             return;
         }
 
-        // Start eating
         event.setCancelled(true);
         startEating(player, item, food);
     }
@@ -95,12 +87,10 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        // Check if this is a custom food item
         if (!hasCustomFoodData(item)) {
             return;
         }
 
-        // Cancel vanilla consumption and handle it ourselves
         event.setCancelled(true);
 
         FoodComponent food = plugin.getFoodManager().getFoodComponent(item);
@@ -110,37 +100,30 @@ public class PlayerInteractListener implements Listener {
     private void startEating(Player player, ItemStack item, FoodComponent food) {
         UUID playerId = player.getUniqueId();
 
-        // Mark player as eating
         eatingPlayers.put(playerId, System.currentTimeMillis());
 
-        // Calculate eating time in ticks
         int eatTicks = (int) (food.getEatSeconds() * 20);
 
-        // Create eating animation task
         BukkitRunnable eatTask = new BukkitRunnable() {
             int ticks = 0;
 
             @Override
             public void run() {
-                // Check if player is still holding the item
                 ItemStack currentItem = player.getInventory().getItemInMainHand();
                 if (!currentItem.isSimilar(item)) {
                     stopEating(playerId);
                     return;
                 }
 
-                // Check if player is still sneaking (if required)
                 if (plugin.getConfig().getBoolean("require-sneak-to-eat", false) && !player.isSneaking()) {
                     stopEating(playerId);
                     return;
                 }
 
-                // Play eating particles/sound periodically
                 if (ticks % 4 == 0) {
                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 0.5f, 1.0f);
                 }
 
-                // Check if finished eating
                 if (ticks >= eatTicks) {
                     stopEating(playerId);
                     consumeItem(player, item, food);
@@ -167,26 +150,26 @@ public class PlayerInteractListener implements Listener {
     private void consumeItem(Player player, ItemStack item, FoodComponent food) {
         UUID playerId = player.getUniqueId();
 
-        // Apply food effects
         player.setFoodLevel(Math.min(20, player.getFoodLevel() + food.getNutrition()));
         player.setSaturation(Math.min(player.getFoodLevel(), player.getSaturation() + food.getSaturation()));
 
-        // Apply potion effects
         for (FoodEffect effect : food.getEffects()) {
             if (effect.shouldApply()) {
                 player.addPotionEffect(effect.toPotionEffect());
             }
         }
 
-        // Play consume sound
         try {
-            Sound sound = Sound.valueOf(food.getSound().toUpperCase());
-            player.getWorld().playSound(player.getLocation(), sound, 1.0f, 1.0f);
-        } catch (IllegalArgumentException e) {
+            Sound sound = Registry.SOUNDS.get(NamespacedKey.minecraft(food.getSound().toLowerCase().replace(".", "_")));
+            if (sound != null) {
+                player.getWorld().playSound(player.getLocation(), sound, 1.0f, 1.0f);
+            } else {
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0f, 1.0f);
+            }
+        } catch (Exception e) {
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0f, 1.0f);
         }
 
-        // Execute commands
         for (String command : food.getCommands()) {
             String processedCommand = command.replace("%player%", player.getName());
             if (command.startsWith("console:")) {
@@ -198,15 +181,12 @@ public class PlayerInteractListener implements Listener {
             }
         }
 
-        // Handle item consumption
         if (player.getGameMode() != GameMode.CREATIVE) {
             item.setAmount(item.getAmount() - 1);
 
-            // Convert to another item if specified
             if (food.getConvertTo() != null) {
                 ItemStack convertedItem = new ItemStack(food.getConvertTo());
 
-                // Add to inventory or drop if full
                 HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(convertedItem);
                 for (ItemStack drop : leftover.values()) {
                     player.getWorld().dropItem(player.getLocation(), drop);
@@ -214,13 +194,11 @@ public class PlayerInteractListener implements Listener {
             }
         }
 
-        // Set cooldown
         if (food.getCooldown() > 0) {
             cooldowns.put(playerId, System.currentTimeMillis());
-            player.setCooldown(item.getType(), food.getCooldown() * 20); // Convert seconds to ticks
+            player.setCooldown(item.getType(), food.getCooldown() * 20);
         }
 
-        // Send consume message if configured
         if (plugin.getConfig().getBoolean("send-consume-message", true)) {
             String message = plugin.getConfig().getString("messages.item-consumed", "&aYou consumed %item%!")
                     .replace("%item%", item.getType().toString());

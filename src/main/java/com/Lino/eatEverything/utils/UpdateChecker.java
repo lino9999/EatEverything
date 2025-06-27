@@ -1,16 +1,15 @@
-// UpdateChecker.java
 package com.Lino.eatEverything.utils;
 
-import com.yourname.eateverything.EatEverything;
+import com.Lino.eatEverything.EatEverything;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 
 public class UpdateChecker {
 
     private final EatEverything plugin;
-    private final int resourceId = 123456; // Replace with your SpigotMC resource ID
+    private final int resourceId = 123456;
 
     public UpdateChecker(EatEverything plugin) {
         this.plugin = plugin;
@@ -19,9 +18,9 @@ public class UpdateChecker {
     public void checkForUpdates() {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(
+                HttpURLConnection connection = (HttpURLConnection) new URI(
                         "https://api.spigotmc.org/legacy/update.php?resource=" + resourceId
-                ).openConnection();
+                ).toURL().openConnection();
 
                 connection.setRequestMethod("GET");
                 String latestVersion = new BufferedReader(
@@ -44,9 +43,9 @@ public class UpdateChecker {
 
     public String getUpdateStatus() {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(
+            HttpURLConnection connection = (HttpURLConnection) new URI(
                     "https://api.spigotmc.org/legacy/update.php?resource=" + resourceId
-            ).openConnection();
+            ).toURL().openConnection();
 
             connection.setRequestMethod("GET");
             String latestVersion = new BufferedReader(
