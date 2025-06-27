@@ -1,0 +1,151 @@
+# EatEverything Configuration
+# Plugin by YourName
+
+# General Settings
+check-updates: true
+require-sneak-to-eat: false
+send-consume-message: true
+
+# Messages
+messages:
+  item-consumed: "&aYou consumed %item%!"
+  no-permission: "&cYou don't have permission to use this command!"
+  must-be-player: "&cThis command can only be used by players!"
+  must-hold-item: "&cYou must hold an item in your hand!"
+  invalid-number: "&cInvalid number format!"
+
+# Default food components for materials
+# These will apply to all items of this type unless overridden
+default-components:
+  STONE:
+    nutrition: 2
+    saturation: 1.0
+    eat-seconds: 2.0
+    can-always-eat: false
+    effects:
+      - type: SLOWNESS
+        duration: 100
+        amplifier: 0
+        probability: 0.5
+    sound: "BLOCK_STONE_BREAK"
+    cooldown: 5
+    commands:
+      - "player:say I just ate a stone!"
+
+  DIRT:
+    nutrition: 1
+    saturation: 0.5
+    eat-seconds: 1.6
+    can-always-eat: true
+    effects:
+      - type: NAUSEA
+        duration: 200
+        amplifier: 0
+        probability: 0.3
+    convert-to: BOWL
+
+  DIAMOND:
+    nutrition: 10
+    saturation: 20.0
+    eat-seconds: 3.0
+    can-always-eat: true
+    effects:
+      - type: REGENERATION
+        duration: 400
+        amplifier: 1
+        probability: 1.0
+      - type: ABSORPTION
+        duration: 600
+        amplifier: 2
+        probability: 1.0
+    sound: "BLOCK_AMETHYST_BLOCK_CHIME"
+    cooldown: 60
+    commands:
+      - "console:give %player% diamond 1"
+      - "console:say %player% consumed a diamond!"
+
+  IRON_INGOT:
+    nutrition: 4
+    saturation: 4.0
+    eat-seconds: 2.5
+    can-always-eat: false
+    effects:
+      - type: RESISTANCE
+        duration: 300
+        amplifier: 0
+        probability: 0.8
+
+  GOLD_INGOT:
+    nutrition: 6
+    saturation: 8.0
+    eat-seconds: 2.0
+    can-always-eat: true
+    effects:
+      - type: SPEED
+        duration: 400
+        amplifier: 1
+        probability: 1.0
+      - type: HASTE
+        duration: 400
+        amplifier: 1
+        probability: 1.0
+
+  EMERALD:
+    nutrition: 8
+    saturation: 12.0
+    eat-seconds: 2.5
+    can-always-eat: true
+    effects:
+      - type: LUCK
+        duration: 1200
+        amplifier: 2
+        probability: 1.0
+      - type: HERO_OF_THE_VILLAGE
+        duration: 600
+        amplifier: 0
+        probability: 0.5
+
+  COAL:
+    nutrition: 2
+    saturation: 1.0
+    eat-seconds: 1.5
+    can-always-eat: false
+    effects:
+      - type: BLINDNESS
+        duration: 60
+        amplifier: 0
+        probability: 0.3
+      - type: SLOWNESS
+        duration: 80
+        amplifier: 0
+        probability: 0.3
+
+  REDSTONE:
+    nutrition: 3
+    saturation: 2.0
+    eat-seconds: 1.0
+    can-always-eat: true
+    effects:
+      - type: SPEED
+        duration: 200
+        amplifier: 2
+        probability: 1.0
+      - type: JUMP_BOOST
+        duration: 200
+        amplifier: 1
+        probability: 0.8
+
+  LAPIS_LAZULI:
+    nutrition: 3
+    saturation: 3.0
+    eat-seconds: 1.8
+    can-always-eat: false
+    effects:
+      - type: WATER_BREATHING
+        duration: 600
+        amplifier: 0
+        probability: 1.0
+      - type: DOLPHINS_GRACE
+        duration: 300
+        amplifier: 0
+        probability: 0.5

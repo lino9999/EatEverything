@@ -1,0 +1,84 @@
+name: EatEverything
+version: '1.0'
+main: com.Lino.eatEverything.EatEverything
+api-version: '1.21'
+author: Lino
+description: Allows players to eat non-edible items and blocks with customizable properties
+
+commands:
+  eateverything:
+    description: Main command for EatEverything plugin
+    aliases: [ee]
+    usage: /<command> [subcommand] [args]
+    permission: eateverything.main
+
+permissions:
+  eateverything.*:
+    description: Gives access to all EatEverything commands
+    default: op
+    children:
+      eateverything.main: true
+      eateverything.saturation: true
+      eateverything.nutrition: true
+      eateverything.eatseconds: true
+      eateverything.edible: true
+      eateverything.info: true
+      eateverything.effect: true
+      eateverything.help: true
+      eateverything.item: true
+      eateverything.check: true
+      eateverything.reload: true
+      eateverything.version: true
+      eateverything.tabcompleter: true
+
+  eateverything.main:
+    description: Access to main command
+    default: true
+
+  eateverything.saturation:
+    description: Modify saturation levels
+    default: op
+
+  eateverything.nutrition:
+    description: Modify nutrition levels
+    default: op
+
+  eateverything.eatseconds:
+    description: Modify eating time
+    default: op
+
+  eateverything.edible:
+    description: Modify can always eat state
+    default: op
+
+  eateverything.info:
+    description: View item food info
+    default: true
+
+  eateverything.effect:
+    description: Manage food effects
+    default: op
+
+  eateverything.help:
+    description: View help information
+    default: true
+
+  eateverything.item:
+    description: Get custom items
+    default: op
+
+  eateverything.check:
+    description: Check for updates
+    default: op
+
+  eateverything.reload:
+    description: Reload the plugin
+    default: op
+
+  eateverything.version:
+    description: View version info
+    default: op
+
+  eateverything.tabcompleter:
+    description: Use tab completion
+    default: true

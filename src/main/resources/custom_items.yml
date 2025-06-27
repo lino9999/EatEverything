@@ -1,0 +1,196 @@
+# Custom Items Configuration
+# Define custom food items that can be obtained with /ee item <id>
+
+items:
+  super_cookie:
+    material: COOKIE
+    name: "&6&lSuper Cookie"
+    lore:
+      - "&7A magical cookie that"
+      - "&7grants incredible powers!"
+      - ""
+      - "&eNutrition: &f10"
+      - "&eSaturation: &f20.0"
+    nutrition: 10
+    saturation: 20.0
+    eat-seconds: 0.5
+    can-always-eat: true
+    effects:
+      - type: SPEED
+        duration: 600
+        amplifier: 2
+        probability: 1.0
+      - type: STRENGTH
+        duration: 600
+        amplifier: 1
+        probability: 1.0
+      - type: REGENERATION
+        duration: 300
+        amplifier: 1
+        probability: 1.0
+    sound: "ENTITY_PLAYER_LEVELUP"
+    cooldown: 30
+
+  energy_bar:
+    material: GOLD_INGOT
+    name: "&b&lEnergy Bar"
+    lore:
+      - "&7Packed with energy!"
+      - "&7Eat to gain a boost."
+      - ""
+      - "&eNutrition: &f6"
+      - "&eSaturation: &f8.0"
+    nutrition: 6
+    saturation: 8.0
+    eat-seconds: 1.0
+    can-always-eat: true
+    effects:
+      - type: SPEED
+        duration: 400
+        amplifier: 1
+        probability: 1.0
+      - type: JUMP_BOOST
+        duration: 400
+        amplifier: 1
+        probability: 1.0
+    sound: "BLOCK_NOTE_BLOCK_CHIME"
+
+  mystery_meat:
+    material: ROTTEN_FLESH
+    name: "&c&lMystery Meat"
+    lore:
+      - "&7You're not sure what"
+      - "&7kind of meat this is..."
+      - ""
+      - "&eNutrition: &f4"
+      - "&eSaturation: &f2.0"
+    nutrition: 4
+    saturation: 2.0
+    eat-seconds: 2.0
+    can-always-eat: false
+    effects:
+      - type: NAUSEA
+        duration: 100
+        amplifier: 0
+        probability: 0.5
+      - type: HUNGER
+        duration: 200
+        amplifier: 1
+        probability: 0.3
+      - type: SATURATION
+        duration: 100
+        amplifier: 2
+        probability: 0.2
+
+  crystal_shard:
+    material: PRISMARINE_SHARD
+    name: "&b&lCrystal Shard"
+    lore:
+      - "&7A crystallized fragment"
+      - "&7of pure magical energy."
+      - ""
+      - "&eNutrition: &f5"
+      - "&eSaturation: &f10.0"
+    nutrition: 5
+    saturation: 10.0
+    eat-seconds: 3.0
+    can-always-eat: true
+    effects:
+      - type: GLOWING
+        duration: 600
+        amplifier: 0
+        probability: 1.0
+      - type: NIGHT_VISION
+        duration: 1200
+        amplifier: 0
+        probability: 1.0
+      - type: RESISTANCE
+        duration: 300
+        amplifier: 0
+        probability: 0.7
+    sound: "BLOCK_AMETHYST_CLUSTER_BREAK"
+    cooldown: 20
+
+  cursed_apple:
+    material: APPLE
+    name: "&5&lCursed Apple"
+    lore:
+      - "&7An apple cursed by"
+      - "&7ancient dark magic."
+      - ""
+      - "&eNutrition: &f8"
+      - "&eSaturation: &f6.0"
+      - "&c&lWARNING: &7Cursed!"
+    nutrition: 8
+    saturation: 6.0
+    eat-seconds: 2.5
+    can-always-eat: true
+    effects:
+      - type: WITHER
+        duration: 60
+        amplifier: 1
+        probability: 0.8
+      - type: STRENGTH
+        duration: 600
+        amplifier: 2
+        probability: 1.0
+      - type: RESISTANCE
+        duration: 600
+        amplifier: 1
+        probability: 1.0
+    sound: "ENTITY_WITHER_AMBIENT"
+    convert-to: STICK
+    commands:
+      - "console:effect give %player% minecraft:darkness 10"
+
+  lucky_clover:
+    material: FERN
+    name: "&a&lLucky Clover"
+    lore:
+      - "&7A four-leaf clover that"
+      - "&7brings good fortune!"
+      - ""
+      - "&eNutrition: &f3"
+      - "&eSaturation: &f5.0"
+    nutrition: 3
+    saturation: 5.0
+    eat-seconds: 1.5
+    can-always-eat: true
+    effects:
+      - type: LUCK
+        duration: 2400
+        amplifier: 3
+        probability: 1.0
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    cooldown: 60
+    commands:
+      - "console:xp add %player% 30 levels"
+
+  void_essence:
+    material: ENDER_PEARL
+    name: "&5&lVoid Essence"
+    lore:
+      - "&7Concentrated essence"
+      - "&7from the void itself."
+      - ""
+      - "&eNutrition: &f0"
+      - "&eSaturation: &f0.0"
+      - "&d&lSpecial Effect!"
+    nutrition: 0
+    saturation: 0.0
+    eat-seconds: 4.0
+    can-always-eat: true
+    effects:
+      - type: LEVITATION
+        duration: 100
+        amplifier: 0
+        probability: 1.0
+      - type: SLOW_FALLING
+        duration: 600
+        amplifier: 0
+        probability: 1.0
+    sound: "ENTITY_ENDERMAN_TELEPORT"
+    cooldown: 45
+    commands:
+      - "console:tp %player% ~ ~50 ~"
+      - "console:effect give %player% minecraft:slow_falling 30"
