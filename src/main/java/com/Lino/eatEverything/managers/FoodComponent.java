@@ -6,7 +6,7 @@ import org.bukkit.potion.PotionEffect;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodComponent {
+public class FoodComponentManager {
 
     private int nutrition = 1;
     private float saturation = 0.5f;
